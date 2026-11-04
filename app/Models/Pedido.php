@@ -2,21 +2,35 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\Filtravel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Produto extends Model
+class Pedido extends Model
 {
-    use HasFactory, Filtravel;
+    use HasFactory;
 
-    protected $fillable = ['sku', 'titulo', 'preco', 'estoque'];
+    public const STATUS = ['Em Aberto', 'Pago', 'Cancelado'];
 
-    protected array $filtraveis = ['id', 'sku', 'titulo', 'preco', 'estoque'];
+    protected $fillable = ['cliente_id', 'data_pedido', 'status'];
+
+    protected $casts = [
+        'data_pedido' => 'datetime',
+    ];
+
+    public function cliente(): BelongsTo
+    {
+        return $this->belongsTo(Cliente::class);
+    }
 
     public function itens(): HasMany
     {
         return $this->hasMany(ItemPedido::class);
+    }
+
+    public function valorTotal(): float
+    {
+        return (float) $this->itens->sum(fn (ItemPedido $item) => $item->subtotal);
     }
 }
