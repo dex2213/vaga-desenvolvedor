@@ -2,28 +2,22 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProdutoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'sku' => ['required', 'string', 'max:100', 'unique:produtos,sku'],
+            'titulo' => ['required', 'string', 'max:100'],
+            'preco' => ['required', 'numeric', 'min:0', 'max:99999999.99'],
+            'estoque' => ['required', 'integer', 'min:0'],
         ];
     }
 }

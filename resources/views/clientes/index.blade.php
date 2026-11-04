@@ -1,21 +1,20 @@
 @extends('layouts.app')
 
-@section('titulo', 'Clientes')
+@section('titulo', 'Produtos')
 
 @section('conteudo')
 @php
-$colunas = ['id' => 'ID', 'nome' => 'Nome', 'cpf' => 'CPF', 'email' => 'E-mail'];
+$colunas = ['id' => 'ID', 'sku' => 'SKU', 'titulo' => 'Título', 'preco' => 'Preço', 'estoque' => 'Estoque'];
 $ordenarPor = request('ordenar_por');
 $direcao = request('direcao') === 'desc' ? 'desc' : 'asc';
 @endphp
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-<h1 class="h3 mb-0">Clientes</h1>
-<a href="{{ route('clientes.create') }}" class="btn btn-primary">Novo cliente</a>
+<h1 class="h3 mb-0">Produtos</h1>
+<a href="{{ route('produtos.create') }}" class="btn btn-primary">Novo produto</a>
 </div>
 
-{{-- Formulário de filtro vazio: os campos da tabela se ligam a ele pelo atributo form --}}
-<form id="filtro" method="GET" action="{{ route('clientes.index') }}"></form>
+<form id="filtro" method="GET" action="{{ route('produtos.index') }}"></form>
 <input type="hidden" name="ordenar_por" value="{{ $ordenarPor }}" form="filtro">
 <input type="hidden" name="direcao" value="{{ $direcao }}" form="filtro">
 
@@ -46,21 +45,22 @@ class="form-control form-control-sm" placeholder="Filtrar" form="filtro">
 @endforeach
 <th class="text-end">
 <button type="submit" class="btn btn-sm btn-secondary" form="filtro">Filtrar</button>
-<a href="{{ route('clientes.index') }}" class="btn btn-sm btn-outline-secondary">Limpar</a>
+<a href="{{ route('produtos.index') }}" class="btn btn-sm btn-outline-secondary">Limpar</a>
 </th>
 </tr>
 </thead>
 <tbody>
-@forelse ($clientes as $cliente)
+@forelse ($produtos as $produto)
 <tr>
-<td>{{ $cliente->id }}</td>
-<td><a href="{{ route('clientes.show', $cliente) }}">{{ $cliente->nome }}</a></td>
-<td>{{ $cliente->cpf }}</td>
-<td>{{ $cliente->email }}</td>
+<td>{{ $produto->id }}</td>
+<td>{{ $produto->sku }}</td>
+<td><a href="{{ route('produtos.show', $produto) }}">{{ $produto->titulo }}</a></td>
+<td>R$ {{ number_format($produto->preco, 2, ',', '.') }}</td>
+<td>{{ $produto->estoque }}</td>
 <td class="text-end">
-<a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-sm btn-outline-primary">Editar</a>
-<form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="d-inline"
-onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
+<a href="{{ route('produtos.edit', $produto) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+<form action="{{ route('produtos.destroy', $produto) }}" method="POST" class="d-inline"
+onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
 @csrf
 @method('DELETE')
 <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
@@ -69,7 +69,7 @@ onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
 </tr>
 @empty
 <tr>
-<td colspan="5" class="text-center text-muted py-4">Nenhum cliente encontrado.</td>
+<td colspan="6" class="text-center text-muted py-4">Nenhum produto encontrado.</td>
 </tr>
 @endforelse
 </tbody>
@@ -77,6 +77,6 @@ onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
 </div>
 
 <div class="mt-3">
-{{ $clientes->links() }}
+{{ $produtos->links() }}
 </div>
 @endsection

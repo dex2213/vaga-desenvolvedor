@@ -10,10 +10,14 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark mb-4">
 <div class="container">
 <a class="navbar-brand" href="{{ route('clientes.index') }}">Pedidos de Compra</a>
-<ul class="navbar-nav">
+<            <ul class="navbar-nav">
 <li class="nav-item">
 <a class="nav-link {{ request()->routeIs('clientes.*') ? 'active' : '' }}"
 href="{{ route('clientes.index') }}">Clientes</a>
+</li>
+<li class="nav-item">
+<a class="nav-link {{ request()->routeIs('produtos.*') ? 'active' : '' }}"
+href="{{ route('produtos.index') }}">Produtos</a>
 </li>
 </ul>
 </div>
