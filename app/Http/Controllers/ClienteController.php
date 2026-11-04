@@ -5,62 +5,55 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClienteRequest;
 use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
+use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $clientes = Cliente::filtrar($request)->paginate(20)->withQueryString();
+
+        return view('clientes.index', compact('clientes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('clientes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreClienteRequest $request)
     {
-        //
+        Cliente::create($request->validated());
+
+        return redirect()->route('clientes.index')->with('sucesso', 'Cliente cadastrado com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Cliente $cliente)
     {
-        //
+        return view('clientes.show', compact('cliente'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Cliente $cliente)
     {
-        //
+        return view('clientes.edit', compact('cliente'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateClienteRequest $request, Cliente $cliente)
     {
-        //
+        $cliente->update($request->validated());
+
+        return redirect()->route('clientes.index')->with('sucesso', 'Cliente atualizado com sucesso.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Cliente $cliente)
     {
-        //
+        if ($cliente->pedidos()->exists()) {
+            return redirect()->route('clientes.index')
+            ->with('erro', 'Não é possível excluir um cliente que possui pedidos.');
+        }
+
+        $cliente->delete();
+
+        return redirect()->route('clientes.index')->with('sucesso', 'Cliente excluído com sucesso.');
     }
 }
