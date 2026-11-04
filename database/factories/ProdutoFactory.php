@@ -2,23 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Produto;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends Factory<Produto>
- */
 class ProdutoFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'sku' => strtoupper(fake()->unique()->bothify('SKU-####-??')),
+            'titulo' => ucfirst(fake()->words(3, true)),
+            'preco' => fake()->randomFloat(2, 5, 2000),
+            'estoque' => fake()->numberBetween(0, 500),
         ];
     }
 }
